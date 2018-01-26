@@ -2,6 +2,8 @@ import numpy as np
 from PIL import Image
 import torch
 
+from videotransforms.utils import images as imageutils
+
 
 class ToTensor(object):
     """Convert a list of m (H x W x C) numpy.ndarrays in the range [0, 255]
@@ -38,13 +40,7 @@ class ToTensor(object):
             else:
                 raise TypeError('Expected numpy.ndarray or PIL.Image\
                 but got list of {0}'.format(type(clip[0])))
-            img = self.convert_img(img)
+            img = imageutils.convert_img(img)
             np_clip[:, img_idx, :, :] = img
         tensor_clip = torch.from_numpy(np_clip)
         return tensor_clip.float().div(255)
-
-    def convert_img(self, img):
-        """Converts (H, W, C) numpy.ndarray to (C, W, H) format
-        """
-        img = img.transpose(2, 0, 1)
-        return img

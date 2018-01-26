@@ -45,8 +45,8 @@ class RandomHorizontalFlip(object):
                     img.transpose(PIL.Image.FLIP_LEFT_RIGHT) for img in clip
                 ]
             else:
-                raise TypeError('Expected numpy.ndarray or PIL.Image\
-                but got list of {0}'.format(type(clip[0])))
+                raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                                ' but got list of {0}'.format(type(clip[0])))
         return clip
 
 
@@ -85,8 +85,8 @@ class Scale(object):
                 pil_inter = PIL.Image.BILINEAR
             scaled = [img.resize(self.size, pil_inter) for img in clip]
         else:
-            raise TypeError('Expected numpy.ndarray or PIL.Image\
-            but got list of {0}'.format(type(clip[0])))
+            raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                            'but got list of {0}'.format(type(clip[0])))
         return scaled
 
 
@@ -116,14 +116,15 @@ class RandomCrop(object):
         elif isinstance(clip[0], PIL.Image.Image):
             im_w, im_h = clip[0].size
         else:
-            raise TypeError('Expected numpy.ndarray or PIL.Image\
-            but got list of {0}'.format(type(clip[0])))
+            raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                            'but got list of {0}'.format(type(clip[0])))
         if w > im_w or h > im_h:
-            raise (ValueError(
-                'Initial image size should be larger then cropped size\
-                but got cropped sizes : ({w}, {h})\
-                while initial image is ({im_w}, {im_h})'
-                .format(im_w=im_w, im_h=im_h, w=w, h=h)))
+            error_msg = (
+                'Initial image size should be larger then '
+                'cropped size but got cropped sizes : ({w}, {h}) while '
+                'initial image is ({im_w}, {im_h})'.format(
+                    im_w=im_w, im_h=im_h, w=w, h=h))
+            raise ValueError(error_msg)
 
         x1 = random.randint(0, im_w - w)
         y1 = random.randint(0, im_h - h)
@@ -132,6 +133,6 @@ class RandomCrop(object):
         elif isinstance(clip[0], PIL.Image.Image):
             cropped = [img.crop((x1, y1, x1 + w, y1 + h)) for img in clip]
         else:
-            raise TypeError('Expected numpy.ndarray or PIL.Image\
-            but got list of {0}'.format(type(clip[0])))
+            raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                            'but got list of {0}'.format(type(clip[0])))
         return cropped

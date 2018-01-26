@@ -2,10 +2,13 @@ import numpy as np
 import PIL
 import torch
 
+from videotransforms.utils import images as imageutils
+
 
 class ToStackedTensor(object):
-    """Convert a (H x W x C) numpy.ndarray in the range [0, 255]
-    to a torch.FloatTensor of shape (C x H x W) in the range [0, 1.0]
+    """Converts a list of m (H x W x C) numpy.ndarrays in the range [0, 255]
+    or PIL Images to a torch.FloatTensor of shape (m*C x H x W)
+    in the range [0, 1.0]
     """
 
     def __init__(self, channel_nb=3):
@@ -13,8 +16,9 @@ class ToStackedTensor(object):
 
     def __call__(self, clip):
         """
-        Args: clip (list of numpy.ndarray): clip (list of images)
-        to be converted to tensor.
+        Args: 
+            clip (list of numpy.ndarray or PIL.Image.Image): clip 
+            (list of images) to be converted to tensor.
         """
         # Retrieve shape
         if isinstance(clip[0], np.ndarray):
@@ -38,42 +42,8 @@ class ToStackedTensor(object):
             else:
                 raise TypeError('Expected numpy.ndarray or PIL.Image\
                 but got list of {0}'.format(type(clip[0])))
-            img = self.convert_img(img)
-            np_clip[img_idx * self.channel_nb:(img_idx + 1
-                                               ) * self.channel_nb, :, :] = img
+            img = imageutils.convert_img(img)
+            np_clip[img_idx * self.channel_nb:(
+                img_idx + 1) * self.channel_nb, :, :] = img
         tensor_clip = torch.from_numpy(np_clip)
         return tensor_clip.float().div(255)
-
-    def convert_img(self, img):
-        """Converts (H, W, C) numpy.ndarray to (C, W, H) format
-        """
-        img = img.transpose(2, 0, 1)
-        return img
-
-
-class StackNormalize(object):
-    """Normalize a tensor image with mean and standard deviation
-
-    Given mean: m and std: s
-    will  normalize each channel as channel = (channel - mean) / std
-
-    Args:
-        mean (int): mean value
-        std (int): std value
-    """
-
-    def __init__(self, mean, std):
-        self.mean = mean
-        self.std = std
-
-    def __call__(self, tensor):
-        """
-        Args:
-            tensor (Tensor): Tensor of stacked images or image
-            of size (C, H, W) to be normalized
-
-        Returns:
-            Tensor: Normalized stack of image of image
-        """
-        tensor.sub_(self.mean).div_(self.std)
-        return tensor
