@@ -10,8 +10,9 @@ class ClipToTensor(object):
     to a torch.FloatTensor of shape (C x m x H x W) in the range [0, 1.0]
     """
 
-    def __init__(self, channel_nb=3):
+    def __init__(self, channel_nb=3, div_255=True):
         self.channel_nb = channel_nb
+        self.div_255 = div_255
 
     def __call__(self, clip):
         """
@@ -43,7 +44,12 @@ class ClipToTensor(object):
             img = imageutils.convert_img(img)
             np_clip[:, img_idx, :, :] = img
         tensor_clip = torch.from_numpy(np_clip)
-        return tensor_clip.float().div(255)
+
+        if not isinstance(tensor_clip, torch.FloatTensor):
+            tensor_clip = tensor_clip.float()
+        if self.div_255:
+            tensor_clip = tensor_clip.div(255)
+        return tensor_clip
 
 
 class ToTensor(object):
