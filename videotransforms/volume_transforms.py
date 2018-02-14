@@ -5,7 +5,7 @@ import torch
 from videotransforms.utils import images as imageutils
 
 
-class ToTensor(object):
+class ClipToTensor(object):
     """Convert a list of m (H x W x C) numpy.ndarrays in the range [0, 255]
     to a torch.FloatTensor of shape (C x m x H x W) in the range [0, 1.0]
     """
@@ -44,3 +44,12 @@ class ToTensor(object):
             np_clip[:, img_idx, :, :] = img
         tensor_clip = torch.from_numpy(np_clip)
         return tensor_clip.float().div(255)
+
+
+class ToTensor(object):
+    """Converts numpy array to tensor
+    """
+
+    def __call__(self, array):
+        tensor = torch.from_numpy(array)
+        return tensor
