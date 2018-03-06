@@ -5,6 +5,7 @@ import random
 from matplotlib import pyplot as plt
 import numpy as np
 import PIL
+import scipy
 import torch
 from skimage.transform import resize
 
@@ -53,8 +54,39 @@ class RandomHorizontalFlip(object):
         return clip
 
 
-class Scale(object):
-    """Scales a list of (H x W x C) numpy.ndarray to the final size
+class RandomResize(object):
+    """Resizes a list of (H x W x C) numpy.ndarray to the final size
+
+    The larger the original image is, the more times it takes to
+    interpolate
+
+    Args:
+    interpolation (str): Can be one of 'nearest', 'bilinear'
+    defaults to nearest
+    size (tuple): (widht, height)
+    """
+
+    def __init__(self, ratio=(3. / 4., 4. / 3.), interpolation='nearest'):
+        self.ratio = ratio
+        self.interpolation = interpolation
+
+    def __call__(self, clip):
+        scaling_factor = random.uniform(self.ratio[0], self.ratio[1])
+
+        if isinstance(clip[0], np.ndarray):
+            im_h, im_w, im_c = clip[0].shape
+        elif isinstance(clip[0], PIL.Image.Image):
+            im_w, im_h = clip[0].size
+
+        new_w = int(im_w * scaling_factor)
+        new_h = int(im_h * scaling_factor)
+        new_size = (new_w, new_h)
+        resized = resize_clip(clip, new_size, interpolation=self.interpolation)
+        return resized
+
+
+class Resize(object):
+    """Resizes a list of (H x W x C) numpy.ndarray to the final size
 
     The larger the original image is, the more times it takes to
     interpolate
@@ -70,46 +102,9 @@ class Scale(object):
         self.interpolation = interpolation
 
     def __call__(self, clip):
-        if isinstance(clip[0], np.ndarray):
-            if isinstance(self.size, numbers.Number):
-                im_h, im_w, im_c = clip[0].shape
-                # Min spatial dim already matches minimal size
-                if (im_w <= im_h
-                        and im_w == self.size) or (im_h <= im_w
-                                                   and im_h == self.size):
-                    return clip
-                new_h, new_w = get_resize_sizes(im_h, im_w, self.size)
-                size = (new_w, new_h)
-            else:
-                size = self.size[1], self.size[0]
-            if self.interpolation == 'bilinear':
-                np_inter = cv2.INTER_LINEAR
-            else:
-                np_inter = cv2.INTER_NEAREST
-            scaled = [
-                cv2.resize(img, size, interpolation=np_inter) for img in clip
-            ]
-        elif isinstance(clip[0], PIL.Image.Image):
-            if isinstance(self.size, numbers.Number):
-                im_w, im_h = clip[0].size
-                # Min spatial dim already matches minimal size
-                if (im_w <= im_h
-                        and im_w == self.size) or (im_h <= im_w
-                                                   and im_h == self.size):
-                    return clip
-                new_h, new_w = get_resize_sizes(im_h, im_w, self.size)
-                size = (new_w, new_h)
-            else:
-                size = self.size[1], self.size[0]
-            if self.interpolation == 'bilinear':
-                pil_inter = PIL.Image.NEAREST
-            else:
-                pil_inter = PIL.Image.BILINEAR
-            scaled = [img.resize(size, pil_inter) for img in clip]
-        else:
-            raise TypeError('Expected numpy.ndarray or PIL.Image' +
-                            'but got list of {0}'.format(type(clip[0])))
-        return scaled
+        resized = resize_clip(
+            clip, self.size, interpolation=self.interpolation)
+        return resized
 
 
 def get_resize_sizes(im_h, im_w, size):
@@ -122,6 +117,47 @@ def get_resize_sizes(im_h, im_w, size):
     return oh, ow
 
 
+def resize_clip(clip, size, interpolation='bilinear'):
+    if isinstance(clip[0], np.ndarray):
+        if isinstance(size, numbers.Number):
+            im_h, im_w, im_c = clip[0].shape
+            # Min spatial dim already matches minimal size
+            if (im_w <= im_h and im_w == size) or (im_h <= im_w
+                                                   and im_h == size):
+                return clip
+            new_h, new_w = get_resize_sizes(im_h, im_w, size)
+            size = (new_w, new_h)
+        else:
+            size = size[1], size[0]
+        if interpolation == 'bilinear':
+            np_inter = cv2.INTER_LINEAR
+        else:
+            np_inter = cv2.INTER_NEAREST
+        scaled = [
+            cv2.resize(img, size, interpolation=np_inter) for img in clip
+        ]
+    elif isinstance(clip[0], PIL.Image.Image):
+        if isinstance(size, numbers.Number):
+            im_w, im_h = clip[0].size
+            # Min spatial dim already matches minimal size
+            if (im_w <= im_h and im_w == size) or (im_h <= im_w
+                                                   and im_h == size):
+                return clip
+            new_h, new_w = get_resize_sizes(im_h, im_w, size)
+            size = (new_w, new_h)
+        else:
+            size = size[1], size[0]
+        if interpolation == 'bilinear':
+            pil_inter = PIL.Image.NEAREST
+        else:
+            pil_inter = PIL.Image.BILINEAR
+        scaled = [img.resize(size, pil_inter) for img in clip]
+    else:
+        raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                        'but got list of {0}'.format(type(clip[0])))
+    return scaled
+
+
 class RandomCrop(object):
     """Extract random crop at the same location for a list of images
 
@@ -131,7 +167,7 @@ class RandomCrop(object):
     """
 
     def __init__(self, size):
-        if isinstance(self.size, numbers.Number):
+        if isinstance(size, numbers.Number):
             size = (size, size)
 
         self.size = size
@@ -166,6 +202,51 @@ class RandomCrop(object):
         cropped = crop_clip(clip, y1, x1, h, w)
 
         return cropped
+
+
+class RandomRotation(object):
+    """Rotate entire clip randomly by a random angle within
+    given bounds
+
+    Args:
+    degrees (sequence or int): Range of degrees to select from
+    If degrees is a number instead of sequence like (min, max),
+    the range of degrees, will be (-degrees, +degrees).
+
+    """
+
+    def __init__(self, degrees):
+        if isinstance(degrees, numbers.Number):
+            if degrees < 0:
+                raise ValueError('If degrees is a single number,'
+                                 'must be positive')
+            degrees = (-degrees, degrees)
+        else:
+            if len(degrees) != 2:
+                raise ValueError('If degrees is a sequence,'
+                                 'it must be of len 2.')
+
+        self.degrees = degrees
+
+    def __call__(self, clip):
+        """
+        Args:
+        img (PIL.Image or numpy.ndarray): List of images to be cropped
+        in format (h, w, c) in numpy.ndarray
+
+        Returns:
+        PIL.Image or numpy.ndarray: Cropped list of images
+        """
+        angle = random.uniform(self.degrees[0], self.degrees[1])
+        if isinstance(clip[0], np.ndarray):
+            rotated = [scipy.misc.imrotate(img, angle) for img in clip]
+        elif isinstance(clip[0], PIL.Image.Image):
+            rotated = [img.rotate(angle) for img in clip]
+        else:
+            raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                            'but got list of {0}'.format(type(clip[0])))
+
+        return rotated
 
 
 class CenterCrop(object):
