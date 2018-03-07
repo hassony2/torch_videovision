@@ -13,15 +13,7 @@ The basic paradigm is that dataloading should produce videoclips as a **list of 
 Several transforms are then provided in [video_transforms](videotransforms/video_transforms.py) that expect such inputs.
 
 Each transform iterates on all the images in the list and applies the wanted augmentation.
-So far the following utilities are provided :
-- ColorJitter (acts on brightness, saturation, contrast and hue, only on PIL Images for now)
-- RandomCrop
-- RandomHorizontalFlip
-- RandomResize
-- RandomRotation
 
-- Resize
-- CenterCrop
 
 We then have to convert those inputs to torch tensors.
 This can be produced by the [volume_transform](videotransforms/volume_transforms.py).**ClipToTensor** class, which produces a video volume in format (n_channels, n_images, height, width) where n_channels = 3 in case of images.
@@ -37,3 +29,19 @@ To quickly see a demo of the transformations, run
 This should produce something like the following image top image (this is a dummy clip for now, so the same image is repeated several times)
 
 On the first row you have the original clip (visualized frame by frame), and on the second row, the transformed one.
+
+# Advancement
+
+[video_transforms.py](videotransforms/video_transforms.py)
+- [x] Compose
+- [x] Resize
+- [x] CenterCrop
+- [x] RandomCrop
+- [x] RandomHorizontalFlip
+- [x] RandomResize
+- [x] RandomRotation
+- [x] ColorJitter (acts on brightness, saturation, contrast and hue, only on PIL Images for now)
+- [ ] RandomResizedCrop
+
+[volume_transforms.py](videotransforms/volume_transforms.py)
+- [x] ClipToTensor
