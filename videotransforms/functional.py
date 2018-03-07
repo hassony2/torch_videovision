@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import PIL
 from skimage.transform import resize
+import torchvision
 
 
 def crop_clip(clip, min_h, min_w, h, w):

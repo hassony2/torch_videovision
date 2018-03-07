@@ -1,26 +1,48 @@
+import argparse
 import os
 
 from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
 
-from videotransforms.video_transforms import Compose, Resize, RandomCrop, RandomRotation
+from videotransforms.video_transforms import Compose, Resize, RandomCrop, RandomRotation, ColorJitter
 from videotransforms.volume_transforms import ClipToTensor
 
 img_path = 'data/cat/cat1.jpeg'
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--brightness', type=float, default=0.5, help='in [0, 1]')
+parser.add_argument('--contrast', type=float, default=0.5, help='in [0, 1]')
+parser.add_argument('--hue', type=float, default=0.25, help='in [0, 0.5]')
+parser.add_argument('--saturation', type=float, default=0.5, help='in [0, 1]')
+parser.add_argument(
+    '--rotation_angle',
+    type=int,
+    default=30,
+    help='Max rotation angle in degrees')
+parser.add_argument(
+    '--scale_size',
+    type=int,
+    default=256,
+    help='Scale smallest clip size to scale_size')
+parser.add_argument(
+    '--clip_size',
+    type=int,
+    default=5,
+    help='Temporal extent of clip (in number of frames)')
+args = parser.parse_args()
+
 # Set transform parameters
-scale_size = (256, 256)
 crop_size = (200, 200)
-max_rotation_angle = 30
 channel_nb = 3
 clip_size = 5
 
 # Initialize transforms
 video_transform_list = [
-    RandomRotation(max_rotation_angle),
-    Resize(scale_size),
+    RandomRotation(args.rotation_angle),
+    Resize(args.scale_size),
     RandomCrop(crop_size),
+    ColorJitter(args.brightness, args.contrast, args.saturation, args.hue),
     ClipToTensor(channel_nb=channel_nb)
 ]
 video_transform = Compose(video_transform_list)
