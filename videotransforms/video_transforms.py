@@ -5,7 +5,7 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import PIL
-import scipy
+import skimage
 import torch
 import torchvision
 
@@ -191,7 +191,7 @@ class RandomRotation(object):
         """
         angle = random.uniform(self.degrees[0], self.degrees[1])
         if isinstance(clip[0], np.ndarray):
-            rotated = [scipy.misc.imrotate(img, angle) for img in clip]
+            rotated = [skimage.transform.rotate(img, angle) for img in clip]
         elif isinstance(clip[0], PIL.Image.Image):
             rotated = [img.rotate(angle) for img in clip]
         else:
