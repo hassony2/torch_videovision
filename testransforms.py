@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
 
-from videotransforms.video_transforms import Compose, Resize, RandomCrop, RandomRotation, ColorJitter
+from videotransforms.video_transforms import Compose, Resize, RandomCrop, RandomRotation, ColorJitter, Normalize
 from videotransforms.volume_transforms import ClipToTensor
 
 img_path = 'data/cat/cat1.jpeg'
@@ -43,7 +43,8 @@ video_transform_list = [
     Resize(args.scale_size),
     RandomCrop(crop_size),
     ColorJitter(args.brightness, args.contrast, args.saturation, args.hue),
-    ClipToTensor(channel_nb=channel_nb)
+    ClipToTensor(channel_nb=channel_nb),
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ]
 video_transform = Compose(video_transform_list)
 
