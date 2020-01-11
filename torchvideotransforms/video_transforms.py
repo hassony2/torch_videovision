@@ -1,12 +1,9 @@
 import numbers
 import random
 
-import cv2
-from matplotlib import pyplot as plt
 import numpy as np
 import PIL
 import skimage
-import torch
 import torchvision
 
 from . import functional as F

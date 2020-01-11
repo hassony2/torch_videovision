@@ -23,7 +23,6 @@ setuptools.setup(
         'torch',
         'torchvision',
         'scikit-image',
-        'Pillow',
     ],
     python_requires='>=3.6',
 )
