@@ -48,10 +48,8 @@ This should produce something like the top image (this is a dummy clip for now, 
 # How to use
 
 ## Install torch_videovision
-```shell
-git clone https://github.com/hassony2/torch_videovision
-export PYTHONPATH=$PYTHONPATH:path/to/torch_videovision
-```
+1. Install `opencv-python`. Installation is OS dependent but in most cases you can use your package manager to install.
+2. `pip install git+https://github.com/bachsh/torch_videovision`
 
 
 ## In your python script
