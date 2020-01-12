@@ -56,7 +56,7 @@ export PYTHONPATH=$PYTHONPATH:path/to/torch_videovision
 
 ## In your python script
 ```python
-from videotranforms import video_transforms, volume_transforms
+from videotransforms import video_transforms, volume_transforms
 
 video_transform_list = [video_transforms.RandomRotation(30),
 			video_transforms.RandomCrop((200, 200))
