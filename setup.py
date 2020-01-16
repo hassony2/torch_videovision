@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="torchvideotransforms",
-    version="0.1.0",
+    version="0.1.1",
     author="Yana Hasson",
     # author_email="author@example.com",
     description="A small example package",

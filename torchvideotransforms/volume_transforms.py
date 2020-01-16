@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from torchvideotransforms.utils import images as imageutils
+from .utils import images as imageutils
 
 
 class ClipToTensor(object):
