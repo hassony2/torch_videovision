@@ -1,6 +1,5 @@
 import numbers
 import random
-
 import numpy as np
 import PIL
 import skimage
@@ -327,3 +326,35 @@ class ColorJitter(object):
             raise TypeError('Expected numpy.ndarray or PIL.Image' +
                             'but got list of {0}'.format(type(clip[0])))
         return jittered_clip
+
+class Normalize(object):
+    """Normalize a clip with mean and standard deviation.
+    Given mean: ``(M1,...,Mn)`` and std: ``(S1,..,Sn)`` for ``n`` channels, this transform
+    will normalize each channel of the input ``torch.*Tensor`` i.e.
+    ``input[channel] = (input[channel] - mean[channel]) / std[channel]``
+
+    .. note::
+        This transform acts out of place, i.e., it does not mutates the input tensor.
+
+    Args:
+        mean (sequence): Sequence of means for each channel.
+        std (sequence): Sequence of standard deviations for each channel.
+    """
+
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, clip):
+        """
+        Args:
+            clip (Tensor): Tensor clip of size (T, C, H, W) to be normalized.
+
+        Returns:
+            Tensor: Normalized Tensor clip.
+        """
+        return F.normalize(clip, self.mean, self.std)
+
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)

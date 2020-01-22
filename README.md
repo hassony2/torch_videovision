@@ -48,8 +48,10 @@ This should produce something like the top image (this is a dummy clip for now, 
 # How to use
 
 ## Install torch_videovision
-1. Install `opencv-python`. Installation is OS dependent but in most cases you can use your package manager to install.
-2. `pip install git+https://github.com/bachsh/torch_videovision`
+```shell
+git clone https://github.com/hassony2/torch_videovision
+export PYTHONPATH=$PYTHONPATH:path/to/torch_videovision
+```
 
 
 ## In your python script
@@ -57,7 +59,7 @@ This should produce something like the top image (this is a dummy clip for now, 
 from torchvideotransforms import video_transforms, volume_transforms
 
 video_transform_list = [video_transforms.RandomRotation(30),
-			video_transforms.RandomCrop((200, 200)),
+			video_transforms.RandomCrop((200, 200))
 			volume_transforms.ClipToTensor()]
 transforms = video_transforms.Compose(video_transform_list)
 ```
