@@ -3,11 +3,10 @@ import torch
 import cv2
 import numpy as np
 import PIL
-from skimage.transform import resize
+
 
 def _is_tensor_clip(clip):
     return torch.is_tensor(clip) and clip.ndimension() == 4
-
 
 
 def crop_clip(clip, min_h, min_w, h, w):
@@ -65,7 +64,6 @@ def resize_clip(clip, size, interpolation='bilinear'):
     return scaled
 
 
-
 def get_resize_sizes(im_h, im_w, size):
     if im_w < im_h:
         ow = size
@@ -74,6 +72,7 @@ def get_resize_sizes(im_h, im_w, size):
         oh = size
         ow = int(size * im_w / im_h)
     return oh, ow
+
 
 def normalize(clip, mean, std, inplace=False):
     if not _is_tensor_clip(clip):

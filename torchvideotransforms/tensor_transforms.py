@@ -1,6 +1,6 @@
 import random
 
-from videotransforms.utils import functional as F
+from .utils import functional as F
 
 
 class Normalize(object):
