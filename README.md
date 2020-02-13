@@ -53,6 +53,7 @@ This should produce something like the top image (this is a dummy clip for now, 
 pip install git+https://github.com/hassony2/torch_videovision
 ```
 
+Thanks to [bachsh](https://github.com/bachsh) !
 
 ## In your python script
 ```python
