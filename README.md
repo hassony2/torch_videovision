@@ -48,9 +48,9 @@ This should produce something like the top image (this is a dummy clip for now, 
 # How to use
 
 ## Install torch_videovision
+
 ```shell
-git clone https://github.com/hassony2/torch_videovision
-export PYTHONPATH=$PYTHONPATH:path/to/torch_videovision
+pip install git+https://github.com/hassony2/torch_videovision
 ```
 
 
