@@ -60,6 +60,42 @@ class RandomHorizontalFlip(object):
         return self.__class__.__name__ + '(p={})'.format(self.p)
 
 
+class RandomVerticalFlip(object):
+    """Vertically flip the list of given images randomly with a given probability.
+
+    Args:
+        p (float): probability of the image being flipped. Default value is 0.5
+    """
+
+    def __init__(self, p=0.5):
+        self.p = p
+
+    def __call__(self, clip):
+        """
+
+        Args:
+            img (PIL.Image or numpy.ndarray): List of images to be flipped
+            in format (h, w, c) in numpy.ndarray
+
+        Returns:
+            PIL.Image or numpy.ndarray: Randomly flipped clip
+        """
+        if random.random() < self.p:
+            if isinstance(clip[0], np.ndarray):
+                return [np.flipud(img) for img in clip]
+            elif isinstance(clip[0], PIL.Image.Image):
+                return [
+                    img.transpose(PIL.Image.FLIP_TOP_BOTTOM) for img in clip
+                ]
+            else:
+                raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                                ' but got list of {0}'.format(type(clip[0])))
+        return clip
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(p={})'.format(self.p)
+
+
 class RandomResize(object):
     """Resizes a list of (H x W x C) numpy.ndarray to the final size
 
