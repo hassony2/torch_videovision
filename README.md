@@ -50,7 +50,7 @@ This should produce something like the top image (this is a dummy clip for now, 
 ## Install torch_videovision
 
 ```shell
-pip install git+https://github.com/hassony2/torch_videovision
+pip install git+https://github.com/tomginsberg/torch_videovision
 ```
 
 Thanks to [bachsh](https://github.com/bachsh) !
