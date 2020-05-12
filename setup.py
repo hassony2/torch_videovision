@@ -11,7 +11,7 @@ setuptools.setup(
     description="Data augmentation for videos as stack of images for PyTorch",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/hassony2/torch_videovision",
+    url="https://github.com/tomginsberg/torch_videovision",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
