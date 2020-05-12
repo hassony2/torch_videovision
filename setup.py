@@ -9,7 +9,6 @@ setuptools.setup(
     author="Yana Hasson",
     author_email="yana.hasson.inria@gmail.com",
     description="Data augmentation for videos as stack of images for PyTorch",
-    download_url="https://github.com/hassony2/torch_videovision/archive/0.1.tar.gz",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/hassony2/torch_videovision",
