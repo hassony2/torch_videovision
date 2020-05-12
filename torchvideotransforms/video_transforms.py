@@ -2,7 +2,7 @@ import numbers
 import random
 import numpy as np
 import PIL
-import skimage
+import skimage.transform
 import torchvision
 
 from . import functional as F
