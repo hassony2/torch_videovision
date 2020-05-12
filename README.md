@@ -60,7 +60,7 @@ Thanks to [bachsh](https://github.com/bachsh) !
 from torchvideotransforms import video_transforms, volume_transforms
 
 video_transform_list = [video_transforms.RandomRotation(30),
-			video_transforms.RandomCrop((200, 200))
+			video_transforms.RandomCrop((200, 200)),
 			volume_transforms.ClipToTensor()]
 transforms = video_transforms.Compose(video_transform_list)
 ```
