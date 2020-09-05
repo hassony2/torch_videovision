@@ -4,6 +4,7 @@ import numpy as np
 import PIL
 import skimage.transform
 import torchvision
+import math
 
 from . import functional as F
 
@@ -223,7 +224,7 @@ class RandomResizedCrop(object):
         self.ratio = ratio
 
     @staticmethod
-    def get_params(img, scale, ratio):
+    def get_params(clip, scale, ratio):
         """Get parameters for ``crop`` for a random sized crop.
 
         Args:
@@ -269,17 +270,17 @@ class RandomResizedCrop(object):
         j = (width - w) // 2
         return i, j, h, w
 
-    def __call__(self, imgs):
+    def __call__(self, clip):
         """
         Args:
-            list of img (PIL Image): Image to be cropped and resized.
+            clip: list of img (PIL Image): Image to be cropped and resized.
 
         Returns:
             list of PIL Image: Randomly cropped and resized image.
         """
-        i, j, h, w = self.get_params(imgs, self.scale, self.ratio)
-        imgs=F.crop_clip(imgs,i,j,h,w)
-        return F.resize_clip(imgs,self.size,self.interpolation)
+        i, j, h, w = self.get_params(clip, self.scale, self.ratio)
+        imgs=F.crop_clip(clip,i,j,h,w)
+        return F.resize_clip(clip,self.size,self.interpolation)
         # return F.resized_crop(img, i, j, h, w, self.size, self.interpolation)
 
     def __repr__(self):
