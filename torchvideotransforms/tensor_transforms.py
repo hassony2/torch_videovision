@@ -55,5 +55,5 @@ class SpatialRandomCrop(object):
             raise ValueError(error_msg)
         x1 = random.randint(0, tensor_w - w)
         y1 = random.randint(0, tensor_h - h)
-        cropped = tensor[:, :, y1:y1 + h, x1:x1 + h]
+        cropped = tensor[:, :, y1:y1 + h, x1:x1 + w]
         return cropped
