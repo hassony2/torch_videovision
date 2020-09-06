@@ -5,6 +5,7 @@ import PIL
 import skimage.transform
 import torchvision
 import math
+import torch
 
 from . import functional as F
 
@@ -96,7 +97,7 @@ class RandomVerticalFlip(object):
     def __repr__(self):
         return self.__class__.__name__ + '(p={})'.format(self.p)
 
-    class RandomGrayscale(torch.nn.Module):
+class RandomGrayscale(torch.nn.Module):
     """Randomly convert image to grayscale with a probability of p (default 0.1).
     The image can be a PIL Image or a Tensor, in which case it is expected
     to have [..., 3, H, W] shape, where ... means an arbitrary number of leading
@@ -109,11 +110,9 @@ class RandomVerticalFlip(object):
         - If input image is 1 channel: grayscale version is 1 channel
         - If input image is 3 channel: grayscale version is 3 channel with r == g == b
     """
-
     def __init__(self, p=0.1):
         super().__init__()
         self.p = p
-
     def forward(self, clip: Tensor) -> Tensor:
         """
         Args:
