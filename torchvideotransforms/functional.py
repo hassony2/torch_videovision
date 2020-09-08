@@ -3,7 +3,7 @@ import torch
 import cv2
 import numpy as np
 import PIL
-
+from PIL import Image
 
 def _is_tensor_clip(clip):
     return torch.is_tensor(clip) and clip.ndimension() == 4
