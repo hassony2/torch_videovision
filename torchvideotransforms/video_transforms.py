@@ -120,12 +120,11 @@ class RandomGrayscale(torch.nn.Module):
         Returns:
             PIL Image or Tensor: Randomly grayscaled image.
         """
-        channel_size=clip[0].shape[-1]
+        num_output_channels = 1 if img.mode == 'L' else 3
         if torch.rand(1)<self.p:
             for i in range(len(clip)):
-                clip[i][:,:,1]=clip[i][:,:,2]=clip[i][:,:,0]
+                clip[i]=F.to_grayscale(clip[i],num_output_channels)
         return clip
-
 
 class RandomResize(object):
     """Resizes a list of (H x W x C) numpy.ndarray to the final size
