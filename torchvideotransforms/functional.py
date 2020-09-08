@@ -35,7 +35,7 @@ def to_grayscale(img, num_output_channels=1):
 
             if num_output_channels = 3 : returned image is 3 channel with r = g = b
     """
-    if not _is_pil_image(img):
+    if not isinstance(img,PIL.Image.Image):
         raise TypeError('img should be PIL Image. Got {}'.format(type(img)))
 
     if num_output_channels == 1:
