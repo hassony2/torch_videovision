@@ -120,7 +120,7 @@ class RandomGrayscale(torch.nn.Module):
         Returns:
             PIL Image or Tensor: Randomly grayscaled image.
         """
-        num_output_channels = 1 if img.mode == 'L' else 3
+        num_output_channels = 1 if clip[0].mode == 'L' else 3
         if torch.rand(1)<self.p:
             for i in range(len(clip)):
                 clip[i]=F.to_grayscale(clip[i],num_output_channels)
