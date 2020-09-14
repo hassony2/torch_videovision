@@ -97,7 +97,7 @@ class RandomVerticalFlip(object):
     def __repr__(self):
         return self.__class__.__name__ + '(p={})'.format(self.p)
 
-class RandomGrayscale(torch.nn.Module):
+class RandomGrayscale(object):
     """Randomly convert image to grayscale with a probability of p (default 0.1).
     The image can be a PIL Image or a Tensor, in which case it is expected
     to have [..., 3, H, W] shape, where ... means an arbitrary number of leading
