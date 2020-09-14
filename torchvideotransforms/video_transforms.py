@@ -113,7 +113,7 @@ class RandomGrayscale(object):
     def __init__(self, p=0.1):
         super().__init__()
         self.p = p
-    def forward(self,clip):
+    def __call__(self,clip):
         """
         Args:
             list of imgs (PIL Image or Tensor): Image to be converted to grayscale.
