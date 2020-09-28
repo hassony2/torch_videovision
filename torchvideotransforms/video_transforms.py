@@ -97,7 +97,7 @@ class RandomVerticalFlip(object):
     def __repr__(self):
         return self.__class__.__name__ + '(p={})'.format(self.p)
 
-class RandomGrayscale(torch.nn.Module):
+class RandomGrayscale(object):
     """Randomly convert image to grayscale with a probability of p (default 0.1).
     The image can be a PIL Image or a Tensor, in which case it is expected
     to have [..., 3, H, W] shape, where ... means an arbitrary number of leading
@@ -113,19 +113,18 @@ class RandomGrayscale(torch.nn.Module):
     def __init__(self, p=0.1):
         super().__init__()
         self.p = p
-    def forward(self,clip):
+    def __call__(self,clip):
         """
         Args:
             list of imgs (PIL Image or Tensor): Image to be converted to grayscale.
         Returns:
             PIL Image or Tensor: Randomly grayscaled image.
         """
-        channel_size=clip[0].shape[-1]
+        num_output_channels = 1 if clip[0].mode == 'L' else 3
         if torch.rand(1)<self.p:
             for i in range(len(clip)):
-                clip[i][:,:,1]=clip[i][:,:,2]=clip[i][:,:,0]
+                clip[i]=F.to_grayscale(clip[i],num_output_channels)
         return clip
-
 
 class RandomResize(object):
     """Resizes a list of (H x W x C) numpy.ndarray to the final size
