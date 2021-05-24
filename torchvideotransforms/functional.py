@@ -81,9 +81,9 @@ def resize_clip(clip, size, interpolation='bilinear'):
         else:
             size = size[1], size[0]
         if interpolation == 'bilinear':
-            pil_inter = PIL.Image.NEAREST
-        else:
             pil_inter = PIL.Image.BILINEAR
+        else:
+            pil_inter = PIL.Image.NEAREST
         scaled = [img.resize(size, pil_inter) for img in clip]
     else:
         raise TypeError('Expected numpy.ndarray or PIL.Image' +
