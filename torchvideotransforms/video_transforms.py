@@ -487,8 +487,8 @@ class ColorJitter(object):
             jittered_clip = []
             for img in clip:
                 for func in img_transforms:
-                    jittered_img = func(img)
-                jittered_clip.append(jittered_img)
+                    img = func(img)
+                jittered_clip.append(img)
 
         else:
             raise TypeError('Expected numpy.ndarray or PIL.Image' +
